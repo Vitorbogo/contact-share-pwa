@@ -1,52 +1,52 @@
 // ATENÇÃO, Insira seu script aqui
 
-//Nome do aluno: COLOQUE SEU NOME
+//Nome do aluno: VITOR DA SILVEIRA BOGO
 //----------------------------------------------------------------------------------------------------------------
 
-const campoEmail = document.querySelector("#email")
-const campoNome = document.querySelector("#nome")
+const campoEmail = document.querySelector('#email')
+const campoNome = document.querySelector('#nome')
 const formulario = document.forms[0]
-const campoDataInicial = document.querySelector("#data-inicial")
-const campoDataFinal = document.querySelector("#data-final")
-const habilidades = document.getElementsByName("habilidade")
+const campoDataInicial = document.querySelector('#data-inicial')
+const campoDataFinal = document.querySelector('#data-final')
+const habilidades = document.getElementsByName('habilidade')
 
 let entries = []
 
-document.getElementsByName("regiao").forEach((regiao) => {
-  regiao.addEventListener("change", (evento) => {
+document.getElementsByName('regiao').forEach((regiao) => {
+  regiao.addEventListener('change', (evento) => {
     validarRegiao(evento.target)
   })
 })
 
-formulario.addEventListener("submit", (evento) => {
+formulario.addEventListener('submit', (evento) => {
   let temErro = false
   if (!validarNome(campoNome.value)) {
-    escreveErro(campoNome, "Nome tem que ter mais de 3 caracteres")
+    escreveErro(campoNome, 'Nome tem que ter mais de 3 caracteres')
     temErro = true
   }
   if (!validarEmail(campoEmail.value)) {
-    escreveErro(campoEmail, "Email inválido")
+    escreveErro(campoEmail, 'Email inválido')
     temErro = true
   }
 
-  const campoSobrenome = document.querySelector("#sobrenome")
+  const campoSobrenome = document.querySelector('#sobrenome')
   if (!validarSobrenome(campoSobrenome.value)) {
-    escreveErro(campoSobrenome, "Sobrenome inválido")
+    escreveErro(campoSobrenome, 'Sobrenome inválido')
     temErro = true
   }
 
-  const campoSite = document.querySelector("#website")
+  const campoSite = document.querySelector('#website')
   if (!validarWebsite(campoSite.value)) {
     escreveErro(
       campoSite,
-      "Informe um endereço no formato http[x]://www.exemplo.com"
+      'Informe um endereço no formato http[x]://www.exemplo.com'
     )
     temErro = true
   }
 
   if (!validarHabilidades(habilidades)) {
-    document.querySelector(".erro-regiao").textContent =
-      "Informe no mínimo 1 e no máximo 3 habilidades"
+    document.querySelector('.erro-regiao').textContent =
+      'Informe no mínimo 1 e no máximo 3 habilidades'
     temErro = true
   }
 
@@ -62,28 +62,28 @@ formulario.addEventListener("submit", (evento) => {
       website: campoSite.value,
       startDate: campoDataInicial.value,
       finalDate: campoDataFinal.value,
-      region: "regiao",
-      skills: "skills",
+      region: 'regiao',
+      skills: 'skills',
     }
     newEntry(serviceEntry)
   }
 })
 
-campoNome.addEventListener("blur", (evento) => {
+campoNome.addEventListener('blur', (evento) => {
   if (!validarNome(evento.target.value)) {
-    escreveErro(evento.target, "Nome tem que ter mais de 3 caracteres")
+    escreveErro(evento.target, 'Nome tem que ter mais de 3 caracteres')
   }
 })
 
-campoEmail.addEventListener("blur", (evento) => {
+campoEmail.addEventListener('blur', (evento) => {
   if (!validarEmail(evento.target.value)) {
-    escreveErro(evento.target, "Email inválido")
+    escreveErro(evento.target, 'Email inválido')
   }
 })
 
 function escreveErro(elemento, mensagem) {
-  elemento.classList.add("is-invalid")
-  let elMsg = elemento.parentNode.querySelector(".invalid-feedback")
+  elemento.classList.add('is-invalid')
+  let elMsg = elemento.parentNode.querySelector('.invalid-feedback')
   elMsg.textContent = mensagem
 }
 
@@ -96,7 +96,7 @@ function validarSobrenome(sobrenome) {
 }
 
 function validarEmail(email) {
-  let partes = email.split("@")
+  let partes = email.split('@')
 
   if (partes.length != 2) {
     return false
@@ -104,18 +104,18 @@ function validarEmail(email) {
 
   let segundaParte = partes[1]
 
-  return segundaParte.indexOf(".") >= 0
+  return segundaParte.indexOf('.') >= 0
 }
 
 function validarData(dataInicial, dataFinal) {
-  let vetorDataInicial = dataInicial.split("/")
+  let vetorDataInicial = dataInicial.split('/')
   let objDataInicial = new Date(
     vetorDataInicial[2],
     vetorDataInicial[1] - 1,
     vetorDataInicial[0]
   )
 
-  let vetorDataFinal = dataFinal.split("/")
+  let vetorDataFinal = dataFinal.split('/')
   let objDataFinal = new Date(
     vetorDataFinal[2],
     vetorDataFinal[1] - 1,
@@ -140,11 +140,11 @@ function validarWebsite(site) {
     return true
   }
 
-  if (!(site.startsWith("http://") && site.startsWith("https://"))) {
+  if (!(site.startsWith('http://') && site.startsWith('https://'))) {
     return false
   }
 
-  return site.indexOf(".") > 0
+  return site.indexOf('.') > 0
 }
 
 function validarHabilidades(habilidades) {
@@ -158,9 +158,9 @@ function validarHabilidades(habilidades) {
 }
 
 function validarRegiao(regiao) {
-  let elProgramador = document.querySelector("#habilidade-programador")
-  let elDBA = document.querySelector("#habilidade-dba")
-  if (regiao.id == "regiao-coeste") {
+  let elProgramador = document.querySelector('#habilidade-programador')
+  let elDBA = document.querySelector('#habilidade-dba')
+  if (regiao.id == 'regiao-coeste') {
     elProgramador.disabled = true
     elProgramador.checked = false
     elDBA.disabled = true
@@ -178,16 +178,16 @@ function validarRegiao(regiao) {
 */
 
 function newEntry(serviceEntry) {
-  console.log("entry", serviceEntry)
+  console.log('entry', serviceEntry)
   let id = entries.push(serviceEntry)
   let entriesText = JSON.stringify(entries)
-  window.localStorage.setItem("Service Entries", entriesText)
+  window.localStorage.setItem('Service Entries', entriesText)
   addTableEntry(serviceEntry, id)
 }
 
 function loadEntries() {
-  entries = JSON.parse(window.localStorage.getItem("Service Entries"))
-  let table = document.querySelector("#tabela-prestador-servico")
+  entries = JSON.parse(window.localStorage.getItem('Service Entries'))
+  let table = document.querySelector('#tabela-prestador-servico')
   for (let x = 0; x < entries.length; x++) {
     let serviceEntry = entries[x]
     if (serviceEntry != null) {
@@ -200,8 +200,55 @@ function addTableEntry(serviceEntry, id) {
   // construir html dinamico (estrutura)
   // atribuir valores aos campos html
   // atribuir botoes de edição
+
+  let table = document.querySelector('#tabela-prestador-servico')
+  let row = table.tBodies[0].insertRow()
+  let cellNome = row.insertCell()
+  let cellSobrenome = row.insertCell()
+  let cellEmail = row.insertCell()
+  let cellWebsite = row.insertCell()
+  let cellDataInicial = row.insertCell()
+  let cellDataFinal = row.insertCell()
+  let cellRegiao = row.insertCell()
+  let cellHabilidades = row.insertCell()
+  let cellEdit = row.insertCell()
+  let cellDelete = row.insertCell()
+
+  cellNome.textContent = serviceEntry.nome
+  cellSobrenome.textContent = serviceEntry.sobrenome
+  cellEmail.textContent = serviceEntry.email
+  cellWebsite.textContent = serviceEntry.website
+  cellDataInicial.textContent = serviceEntry.startDate
+  cellDataFinal.textContent = serviceEntry.finalDate
+  cellRegiao.textContent = serviceEntry.region
+  cellHabilidades.textContent = serviceEntry.skills
+
+  let editButton = document.createElement('button')
+  editButton.className = 'btn-edit'
+  editButton.innerText = 'Editar'
+  editButton.dataset.entryId = id
+  cellEdit.appendChild(editButton)
+  editButton.addEventListener('click', (value) => {
+    editEntry(value.target)
+  })
+
+  let deleteButton = document.createElement('button')
+  deleteButton.className = 'btn-delete'
+  deleteButton.innerText = 'Deletar'
+  deleteButton.dataset.entryId = id
+  cellDelete.appendChild(deleteButton)
+  deleteButton.addEventListener('click', (value) => {
+    deleteEntry(value.target)
+  })
 }
 
+function editEntry(editButton) {}
+
 function removeEntry(deleteButton) {
-  //handle delete
+  let id = deleteButton.dataset.entryId
+  delete entries[id]
+  window.localStorage.setItem('Service Entries', JSON.stringify(entries))
+  let table = document.querySelector('#tabela-prestador-servico')
+  let rowToDelete = deleteButton.parentNode.parentNode
+  table.tBodies[0].removeChild(rowToDelete)
 }
