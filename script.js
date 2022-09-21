@@ -54,7 +54,10 @@ formulario.addEventListener('submit', (evento) => {
   if (!temErro) {
     evento.preventDefault()
   } else {
+    //prevent default para eu poder ver o console.log
+    // depois retirar isso
     evento.preventDefault()
+
     let serviceEntry = {
       nome: campoNome.value,
       sobrenome: campoSobrenome.value,
@@ -197,7 +200,7 @@ function loadEntries() {
 }
 
 function addTableEntry(serviceEntry, id) {
-  // construir html dinamico (estrutura)
+  // construir html dinamico
   // atribuir valores aos campos html
   // atribuir botoes de edição
 
