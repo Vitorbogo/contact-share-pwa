@@ -3,14 +3,18 @@
 //Nome do aluno: VITOR DA SILVEIRA BOGO
 //----------------------------------------------------------------------------------------------------------------
 
+let entries = []
+
 const campoEmail = document.querySelector('#email')
 const campoNome = document.querySelector('#nome')
+const campoSobrenome = document.querySelector('#sobrenome')
+const campoWebsite = document.querySelector('#website')
 const formulario = document.forms[0]
 const campoDataInicial = document.querySelector('#data-inicial')
 const campoDataFinal = document.querySelector('#data-final')
 const habilidades = document.getElementsByName('habilidade')
-
-let entries = []
+const campoRegioes = document.getElementsByName('regiao')
+const table = document.querySelector('#tabela-prestador-servico')
 
 document.getElementsByName('regiao').forEach((regiao) => {
   regiao.addEventListener('change', (evento) => {
@@ -29,7 +33,6 @@ formulario.addEventListener('submit', (evento) => {
     temErro = true
   }
 
-  const campoSobrenome = document.querySelector('#sobrenome')
   if (!validarSobrenome(campoSobrenome.value)) {
     escreveErro(campoSobrenome, 'Sobrenome inválido')
     temErro = true
@@ -50,8 +53,17 @@ formulario.addEventListener('submit', (evento) => {
     temErro = true
   }
 
+  // get region value
+  const regionValue = Array.from(campoRegioes).filter(
+    (regiao) => regiao.checked
+  )[0].id
+
+  const skillsValue = Array.from(habilidades)
+    .filter((skill) => skill.checked)
+    .map((skill) => skill.id)
+
   // criar objeto para salvar
-  if (!temErro) {
+  if (temErro) {
     evento.preventDefault()
   } else {
     //prevent default para eu poder ver o console.log
@@ -65,8 +77,8 @@ formulario.addEventListener('submit', (evento) => {
       website: campoSite.value,
       startDate: campoDataInicial.value,
       finalDate: campoDataFinal.value,
-      region: 'regiao',
-      skills: 'skills',
+      region: regionValue,
+      skills: skillsValue[0] + ',' + skillsValue[1] + ',' + skillsValue[2],
     }
     newEntry(serviceEntry)
   }
@@ -190,7 +202,6 @@ function newEntry(serviceEntry) {
 
 function loadEntries() {
   entries = JSON.parse(window.localStorage.getItem('Service Entries'))
-  let table = document.querySelector('#tabela-prestador-servico')
   for (let x = 0; x < entries.length; x++) {
     let serviceEntry = entries[x]
     if (serviceEntry != null) {
@@ -199,12 +210,14 @@ function loadEntries() {
   }
 }
 
+// carregar automaticamente as entradas
+window.onload = loadEntries()
+
 function addTableEntry(serviceEntry, id) {
   // construir html dinamico
   // atribuir valores aos campos html
   // atribuir botoes de edição
 
-  let table = document.querySelector('#tabela-prestador-servico')
   let row = table.tBodies[0].insertRow()
   let cellNome = row.insertCell()
   let cellSobrenome = row.insertCell()
@@ -245,11 +258,46 @@ function addTableEntry(serviceEntry, id) {
   })
 }
 
-function editEntry(editButton) {}
+function editEntry(editButton) {
+  const editId = editButton.dataset.entryId
+  console.log('edit', editId)
+  campoNome.value = entries[editId].nome
+  campoSobrenome.value = entries[editId].sobrenome
+  campoEmail.value = entries[editId].email
+  campoWebsite.value = entries[editId].website
+  campoDataInicial.value = entries[editId].startDate
+  campoDataFinal.value = entries[editId].finalDate
 
-function removeEntry(deleteButton) {
+  //find the region value then check it
+  for (let i = 0; i < campoRegioes.length; i++) {
+    if (campoRegioes[i].id == entries[editId].region) {
+      campoRegioes[i].checked = true
+    }
+  }
+
+  //find the skills value then check it
+
+  //split the skills string into an array and remove spacecs
+  const convertSkills = entries[editId].skills.split(',').map((skill) => {
+    return skill.trim()
+  })
+  console.log('convertSkills', convertSkills)
+
+  for (let i = 0; i < habilidades.length; i++) {
+    for (let j = 0; j < convertSkills.length; j++) {
+      if (habilidades[i].id == convertSkills[j]) {
+        habilidades[i].checked = true
+      }
+    }
+  }
+
+  //change submit button to update button
+}
+
+function deleteEntry(deleteButton) {
   let id = deleteButton.dataset.entryId
-  delete entries[id]
+  // id pegando um valor acima ???? is this normal?
+  delete entries[id - 1]
   window.localStorage.setItem('Service Entries', JSON.stringify(entries))
   let table = document.querySelector('#tabela-prestador-servico')
   let rowToDelete = deleteButton.parentNode.parentNode
