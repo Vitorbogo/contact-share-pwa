@@ -292,6 +292,7 @@ function editEntry(editButton) {
   }
 
   //change submit button to update button
+  //create or find update button
 }
 
 function deleteEntry(deleteButton) {
