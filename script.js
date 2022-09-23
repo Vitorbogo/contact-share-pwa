@@ -64,7 +64,6 @@ formulario.addEventListener('submit', (evento) => {
     .filter((skill) => skill.checked)
     .map((skill) => skill.id)
 
-  // criar objeto para salvar
   if (temErro) {
     evento.preventDefault()
   }
@@ -81,7 +80,6 @@ formulario.addEventListener('submit', (evento) => {
   }
 
   if (btnToggle == false) {
-    //prevent default para eu poder ver o console.log
     newEntry(serviceEntry)
   } else {
     updateEntry(serviceEntry)
@@ -190,12 +188,6 @@ function validarRegiao(regiao) {
   }
 }
 
-/*
-    - fazer criação de html dinamicamente
-    - Permitir edição / remoção
-    - Usar dados locais
-*/
-
 function newEntry(serviceEntry) {
   let id = entries.push(serviceEntry)
   let entriesText = JSON.stringify(entries)
@@ -213,14 +205,10 @@ function loadEntries() {
   }
 }
 
-// carregar automaticamente as entradas
+// carregar automaticamente as entradas no build da pagina
 window.onload = loadEntries()
 
 function addTableEntry(serviceEntry, id) {
-  // construir html dinamico
-  // atribuir valores aos campos html
-  // atribuir botoes de edição
-
   let row = table.tBodies[0].insertRow()
   let cellNome = row.insertCell()
   let cellSobrenome = row.insertCell()
@@ -278,8 +266,8 @@ function editEntry(editButton) {
     }
   }
 
-  //find the skills value then check it
-  //split the skills string into an array and remove spacecs
+  //find the skills values then checking it
+  //split the skills string into an array and remove spaces
   const convertSkills = entries[editValue].skills.split(',').map((skill) => {
     return skill.trim()
   })
@@ -301,7 +289,6 @@ function editEntry(editButton) {
 
 function deleteEntry(deleteButton) {
   let id = deleteButton.dataset.entryId
-  // id pegando um valor acima ???? is this normal?
   delete entries[id - 1]
   window.localStorage.setItem('Service Entries', JSON.stringify(entries))
   let table = document.querySelector('#tabela-prestador-servico')
@@ -314,6 +301,7 @@ function updateEntry(serviceEntry) {
   const retrieveString = localStorage.getItem('Service Entries')
   const retrieveArray = JSON.parse(retrieveString)
 
+  //update and convert data
   retrieveArray[editValue] = serviceEntry
   const modifedArray = JSON.stringify(retrieveArray)
   localStorage.setItem('Service Entries', modifedArray)
