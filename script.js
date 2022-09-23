@@ -15,6 +15,8 @@ const campoDataFinal = document.querySelector('#data-final')
 const habilidades = document.getElementsByName('habilidade')
 const campoRegioes = document.getElementsByName('regiao')
 const table = document.querySelector('#tabela-prestador-servico')
+let btnToggle = false // false = padrão || true = update
+let editValue = -1
 
 document.getElementsByName('regiao').forEach((regiao) => {
   regiao.addEventListener('change', (evento) => {
@@ -65,22 +67,24 @@ formulario.addEventListener('submit', (evento) => {
   // criar objeto para salvar
   if (temErro) {
     evento.preventDefault()
-  } else {
-    //prevent default para eu poder ver o console.log
-    // depois retirar isso
-    evento.preventDefault()
+  }
 
-    let serviceEntry = {
-      nome: campoNome.value,
-      sobrenome: campoSobrenome.value,
-      email: campoEmail.value,
-      website: campoSite.value,
-      startDate: campoDataInicial.value,
-      finalDate: campoDataFinal.value,
-      region: regionValue,
-      skills: skillsValue[0] + ',' + skillsValue[1] + ',' + skillsValue[2],
-    }
+  let serviceEntry = {
+    nome: campoNome.value,
+    sobrenome: campoSobrenome.value,
+    email: campoEmail.value,
+    website: campoSite.value,
+    startDate: campoDataInicial.value,
+    finalDate: campoDataFinal.value,
+    region: regionValue,
+    skills: skillsValue[0] + ',' + skillsValue[1] + ',' + skillsValue[2],
+  }
+
+  if (btnToggle == false) {
+    //prevent default para eu poder ver o console.log
     newEntry(serviceEntry)
+  } else {
+    updateEntry(serviceEntry)
   }
 })
 
@@ -193,7 +197,6 @@ function validarRegiao(regiao) {
 */
 
 function newEntry(serviceEntry) {
-  console.log('entry', serviceEntry)
   let id = entries.push(serviceEntry)
   let entriesText = JSON.stringify(entries)
   window.localStorage.setItem('Service Entries', entriesText)
@@ -259,29 +262,27 @@ function addTableEntry(serviceEntry, id) {
 }
 
 function editEntry(editButton) {
-  const editId = editButton.dataset.entryId
-  console.log('edit', editId)
-  campoNome.value = entries[editId].nome
-  campoSobrenome.value = entries[editId].sobrenome
-  campoEmail.value = entries[editId].email
-  campoWebsite.value = entries[editId].website
-  campoDataInicial.value = entries[editId].startDate
-  campoDataFinal.value = entries[editId].finalDate
+  editValue = editButton.dataset.entryId
+
+  campoNome.value = entries[editValue].nome
+  campoSobrenome.value = entries[editValue].sobrenome
+  campoEmail.value = entries[editValue].email
+  campoWebsite.value = entries[editValue].website
+  campoDataInicial.value = entries[editValue].startDate
+  campoDataFinal.value = entries[editValue].finalDate
 
   //find the region value then check it
   for (let i = 0; i < campoRegioes.length; i++) {
-    if (campoRegioes[i].id == entries[editId].region) {
+    if (campoRegioes[i].id == entries[editValue].region) {
       campoRegioes[i].checked = true
     }
   }
 
   //find the skills value then check it
-
   //split the skills string into an array and remove spacecs
-  const convertSkills = entries[editId].skills.split(',').map((skill) => {
+  const convertSkills = entries[editValue].skills.split(',').map((skill) => {
     return skill.trim()
   })
-  console.log('convertSkills', convertSkills)
 
   for (let i = 0; i < habilidades.length; i++) {
     for (let j = 0; j < convertSkills.length; j++) {
@@ -293,6 +294,9 @@ function editEntry(editButton) {
 
   //change submit button to update button
   //create or find update button
+  btnToggle = true
+  document.querySelector('.hide-submit').style.display = 'none'
+  document.querySelector('.hide-update').style.display = 'block'
 }
 
 function deleteEntry(deleteButton) {
@@ -303,4 +307,14 @@ function deleteEntry(deleteButton) {
   let table = document.querySelector('#tabela-prestador-servico')
   let rowToDelete = deleteButton.parentNode.parentNode
   table.tBodies[0].removeChild(rowToDelete)
+}
+
+function updateEntry(serviceEntry) {
+  //retrieve data
+  const retrieveString = localStorage.getItem('Service Entries')
+  const retrieveArray = JSON.parse(retrieveString)
+
+  retrieveArray[editValue] = serviceEntry
+  const modifedArray = JSON.stringify(retrieveArray)
+  localStorage.setItem('Service Entries', modifedArray)
 }
