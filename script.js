@@ -1,8 +1,3 @@
-// ATENÇÃO, Insira seu script aqui
-
-//Nome do aluno: VITOR DA SILVEIRA BOGO
-//----------------------------------------------------------------------------------------------------------------
-
 let entries = []
 
 const campoEmail = document.querySelector('#email')
@@ -55,7 +50,6 @@ formulario.addEventListener('submit', (evento) => {
     temErro = true
   }
 
-  // get region value
   const regionValue = Array.from(campoRegioes).filter(
     (regiao) => regiao.checked
   )[0].id
@@ -85,6 +79,12 @@ formulario.addEventListener('submit', (evento) => {
     updateEntry(serviceEntry)
   }
 })
+
+function escreveErro(elemento, mensagem) {
+  elemento.classList.add('is-invalid')
+  let elMsg = elemento.parentNode.querySelector('.invalid-feedback')
+  elMsg.textContent = mensagem
+}
 
 campoNome.addEventListener('blur', (evento) => {
   if (!validarNome(evento.target.value)) {
@@ -197,15 +197,16 @@ function newEntry(serviceEntry) {
 
 function loadEntries() {
   entries = JSON.parse(window.localStorage.getItem('Service Entries'))
-  for (let x = 0; x < entries.length; x++) {
-    let serviceEntry = entries[x]
-    if (serviceEntry != null) {
-      addTableEntry(serviceEntry, x)
+  if (entries !== null) {
+    for (let x = 0; x < entries.length; x++) {
+      let serviceEntry = entries[x]
+      if (serviceEntry != null) {
+        addTableEntry(serviceEntry, x)
+      }
     }
   }
 }
 
-// carregar automaticamente as entradas no build da pagina
 window.onload = loadEntries()
 
 function addTableEntry(serviceEntry, id) {
@@ -259,15 +260,12 @@ function editEntry(editButton) {
   campoDataInicial.value = entries[editValue].startDate
   campoDataFinal.value = entries[editValue].finalDate
 
-  //find the region value then check it
   for (let i = 0; i < campoRegioes.length; i++) {
     if (campoRegioes[i].id == entries[editValue].region) {
       campoRegioes[i].checked = true
     }
   }
 
-  //find the skills values then checking it
-  //split the skills string into an array and remove spaces
   const convertSkills = entries[editValue].skills.split(',').map((skill) => {
     return skill.trim()
   })

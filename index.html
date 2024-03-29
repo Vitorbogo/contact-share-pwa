@@ -17,6 +17,9 @@
       crossorigin="anonymous"
     ></script>
     <script src="script.js" defer></script>
+    <link rel="icon" href="icon.png" type="image/png" />
+    <link rel="manifest" href="manifest.json" />
+    <script src="sw.js" defer></script>
   </head>
   <body>
     <div class="container">
@@ -46,11 +49,7 @@
               placeholder=""
               value=""
             />
-            <div class="invalid-feedback">
-              Esse campo está com o is-invalid só para vocês saberem como fazer
-              com o bootstrap! Esse texto precisa mudar dinamicamente, via
-              javascript, para refletir o erro que você quer mostrar.
-            </div>
+            <div class="invalid-feedback"></div>
           </div>
 
           <div class="col-12">
@@ -252,9 +251,6 @@
         </button>
       </form>
 
-      <!--
-        Criação html para inserção da tabela de prestadores de serviço
-      -->
       <table class="table" id="tabela-prestador-servico">
         <thead>
           <tr>
@@ -271,7 +267,7 @@
           </tr>
         </thead>
         <tbody>
-          <!-- Os dados dinamicos entram aqui dentro -->
+          <!-- Dynamic content here -->
         </tbody>
       </table>
     </div>
