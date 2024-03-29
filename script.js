@@ -73,6 +73,10 @@ formulario.addEventListener('submit', (evento) => {
     skills: skillsValue[0] + ',' + skillsValue[1] + ',' + skillsValue[2],
   }
 
+  if (temErro) {
+    evento.preventDefault()
+  }
+
   if (btnToggle == false) {
     newEntry(serviceEntry)
   } else {
@@ -196,8 +200,8 @@ function newEntry(serviceEntry) {
 }
 
 function loadEntries() {
-  entries = JSON.parse(window.localStorage.getItem('Service Entries'))
-  if (entries !== null) {
+  entries = JSON.parse(window.localStorage.getItem('Service Entries')) || []
+  if (entries != null) {
     for (let x = 0; x < entries.length; x++) {
       let serviceEntry = entries[x]
       if (serviceEntry != null) {
@@ -271,6 +275,7 @@ function editEntry(editButton) {
   })
 
   for (let i = 0; i < habilidades.length; i++) {
+    habilidades[i].checked = false
     for (let j = 0; j < convertSkills.length; j++) {
       if (habilidades[i].id == convertSkills[j]) {
         habilidades[i].checked = true
@@ -278,8 +283,6 @@ function editEntry(editButton) {
     }
   }
 
-  //change submit button to update button
-  //create or find update button
   btnToggle = true
   document.querySelector('.hide-submit').style.display = 'none'
   document.querySelector('.hide-update').style.display = 'block'
