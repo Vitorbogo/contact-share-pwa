@@ -45,6 +45,28 @@ let editValue = -1
 let tabelaPrestadorServico = document.querySelector('tabela-prestador-servico')
 let shadowRoot = tabelaPrestadorServico.shadowRoot
 let table = shadowRoot.querySelector('table')
+let deferredPrompt
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault()
+  deferredPrompt = e
+
+  const installButton = document.getElementById('install-button')
+  installButton.style.display = 'block'
+
+  installButton.addEventListener('click', (e) => {
+    deferredPrompt.prompt()
+
+    deferredPrompt.userChoice.then((choiceResult) => {
+      if (choiceResult.outcome === 'accepted') {
+        console.log('Usuário aceitou a instalação do PWA')
+      } else {
+        console.log('Usuário recusou a instalação do PWA')
+      }
+      deferredPrompt = null
+    })
+  })
+})
 
 document.getElementsByName('regiao').forEach((regiao) => {
   regiao.addEventListener('change', (evento) => {
