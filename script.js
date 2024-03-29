@@ -1,3 +1,34 @@
+class TabelaPrestadorServico extends HTMLElement {
+  constructor() {
+    super()
+    const shadow = this.attachShadow({ mode: 'open' })
+    const table = document.createElement('table')
+    table.className = 'table'
+    table.id = 'tabela-prestador-servico'
+    table.innerHTML = `
+      <thead>
+        <tr>
+          <th scope="col">Nome</th>
+          <th scope="col">Sobrenome</th>
+          <th scope="col">Email</th>
+          <th scope="col">Website</th>
+          <th scope="col">Data Inicial</th>
+          <th scope="col">Data Final</th>
+          <th scope="col">Região</th>
+          <th scope="col">Habilidades</th>
+          <th scope="col">Editar</th>
+          <th scope="col">Remover</th>
+          <th scope="col">Compartilhar</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    `
+    shadow.appendChild(table)
+  }
+}
+
+customElements.define('tabela-prestador-servico', TabelaPrestadorServico)
+
 let entries = []
 
 const campoEmail = document.querySelector('#email')
@@ -9,9 +40,11 @@ const campoDataInicial = document.querySelector('#data-inicial')
 const campoDataFinal = document.querySelector('#data-final')
 const habilidades = document.getElementsByName('habilidade')
 const campoRegioes = document.getElementsByName('regiao')
-const table = document.querySelector('#tabela-prestador-servico')
 let btnToggle = false // false = padrão || true = update
 let editValue = -1
+let tabelaPrestadorServico = document.querySelector('tabela-prestador-servico')
+let shadowRoot = tabelaPrestadorServico.shadowRoot
+let table = shadowRoot.querySelector('table')
 
 document.getElementsByName('regiao').forEach((regiao) => {
   regiao.addEventListener('change', (evento) => {
@@ -204,14 +237,14 @@ function loadEntries() {
   if (entries != null) {
     for (let x = 0; x < entries.length; x++) {
       let serviceEntry = entries[x]
-      if (serviceEntry != null) {
+      if (serviceEntry != null && serviceEntry != undefined) {
         addTableEntry(serviceEntry, x)
       }
     }
   }
 }
 
-window.onload = loadEntries()
+window.onload = loadEntries
 
 function addTableEntry(serviceEntry, id) {
   let row = table.tBodies[0].insertRow()
@@ -225,6 +258,7 @@ function addTableEntry(serviceEntry, id) {
   let cellHabilidades = row.insertCell()
   let cellEdit = row.insertCell()
   let cellDelete = row.insertCell()
+  let cellShare = row.insertCell()
 
   cellNome.textContent = serviceEntry.nome
   cellSobrenome.textContent = serviceEntry.sobrenome
@@ -251,6 +285,15 @@ function addTableEntry(serviceEntry, id) {
   cellDelete.appendChild(deleteButton)
   deleteButton.addEventListener('click', (value) => {
     deleteEntry(value.target)
+  })
+
+  let shareButton = document.createElement('button')
+  shareButton.className = 'btn-share'
+  shareButton.innerText = 'Compartilhar'
+  shareButton.dataset.entryId = id
+  cellShare.appendChild(shareButton)
+  shareButton.addEventListener('click', (value) => {
+    shareContact(value.target)
   })
 }
 
@@ -298,12 +341,48 @@ function deleteEntry(deleteButton) {
 }
 
 function updateEntry(serviceEntry) {
-  //retrieve data
   const retrieveString = localStorage.getItem('Service Entries')
   const retrieveArray = JSON.parse(retrieveString)
 
-  //update and convert data
   retrieveArray[editValue] = serviceEntry
-  const modifedArray = JSON.stringify(retrieveArray)
-  localStorage.setItem('Service Entries', modifedArray)
+  const modifiedArray = JSON.stringify(retrieveArray)
+  localStorage.setItem('Service Entries', modifiedArray)
+}
+
+function shareContact(entry) {
+  if (navigator.share) {
+    navigator
+      .share({
+        title: 'Contato',
+        text:
+          `Nome: ${entry.parentNode.parentNode.cells[0].textContent}\n` +
+          `Sobrenome: ${entry.parentNode.parentNode.cells[1].textContent}\n` +
+          `Email: ${entry.parentNode.parentNode.cells[2].textContent}\n` +
+          `Website: ${entry.parentNode.parentNode.cells[3].textContent}\n` +
+          `Data Inicial: ${entry.parentNode.parentNode.cells[4].textContent}\n` +
+          `Data Final: ${entry.parentNode.parentNode.cells[5].textContent}\n` +
+          `Região: ${entry.parentNode.parentNode.cells[6].textContent}\n` +
+          `Habilidades: ${entry.parentNode.parentNode.cells[7].textContent}`,
+        url: window.location.href,
+      })
+      .then(() => console.log('Contato compartilhado com sucesso!'))
+      .catch((error) => console.log('Erro ao compartilhar contato', error))
+  } else {
+    console.log('API Web Share não suportada neste navegador.')
+    navigator.clipboard
+      .writeText(
+        `Nome: ${entry.parentNode.parentNode.cells[0].textContent}\n` +
+          `Sobrenome: ${entry.parentNode.parentNode.cells[1].textContent}\n` +
+          `Email: ${entry.parentNode.parentNode.cells[2].textContent}\n` +
+          `Website: ${entry.parentNode.parentNode.cells[3].textContent}\n` +
+          `Data Inicial: ${entry.parentNode.parentNode.cells[4].textContent}\n` +
+          `Data Final: ${entry.parentNode.parentNode.cells[5].textContent}\n` +
+          `Região: ${entry.parentNode.parentNode.cells[6].textContent}\n` +
+          `Habilidades: ${entry.parentNode.parentNode.cells[7].textContent}`
+      )
+      .then(() => console.log('Contato copiado para o clipboard com sucesso!'))
+      .catch((error) =>
+        console.log('Erro ao copiar contato para o clipboard', error)
+      )
+  }
 }
