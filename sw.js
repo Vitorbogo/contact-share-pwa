@@ -1,6 +1,12 @@
 const cacheName = 'notes-cache'
 
-const filesToCache = ['/', '/index.html', '/script.js', 'icon.png']
+const filesToCache = [
+  '/',
+  '/index.html',
+  '/script.js',
+  '/icon.png',
+  '/favicon.ico',
+]
 
 self.addEventListener('install', function (event) {
   event.waitUntil(
