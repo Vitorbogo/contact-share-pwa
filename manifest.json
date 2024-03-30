@@ -2,7 +2,7 @@
   "short_name": "PWA Contatos",
   "name": "Aplicativo de contatos",
   "description": "Um aplicativo de contatos simples",
-  "start_url": "/",
+  "start_url": "contact-share-pwa/",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000",
