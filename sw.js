@@ -6,7 +6,6 @@ const filesToCache = [
   '/script.js',
   '/icon.png',
   '/favicon.ico',
-  '/manifest.json',
 ]
 
 self.addEventListener('install', function (event) {
